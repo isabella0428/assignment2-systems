@@ -30,10 +30,7 @@ def benchmark(args: argparse.Namespace):
 
 	optimizer = AdamW(model.parameters())
 
-	forward_time = []
-	backward_time = []
-
-	for _ in range(args.warmup_iters):
+	for _ in range(args.warmup_iters+1):
 		forward_start_time = timeit.default_timer()
 		result = model.forward(input_batch)
 		torch.mps.synchronize()
@@ -53,11 +50,8 @@ def benchmark(args: argparse.Namespace):
 		optimizer.step()
 		torch.mps.synchronize()
 
-		forward_time.append(forward_finish_time - forward_start_time)
-		backward_time.append(backward_finish_time - backward_start_time)
-
-	print(f"Average forward time: {np.mean(forward_time)}")
-	print(f"Average backward time: {np.mean(backward_time)}")
+	print(f"Average forward time: {np.mean(forward_finish_time - forward_start_time)}")
+	print(f"Average backward time: {np.mean(backward_finish_time - backward_start_time)}")
 
 
 if __name__ == "__main__":
