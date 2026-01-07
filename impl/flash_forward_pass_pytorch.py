@@ -52,13 +52,13 @@ class FlashForwardPassPytorch(torch.autograd.Function):
 				P_local_i_j = torch.exp(S_i_j - new_m_i_j)
 
 				alpha = torch.exp(m_i_j - new_m_i_j)  # Shape: (..., B_q, 1)
-				l_i_j = torch.exp(m_i_j - new_m_i_j) * l_i_j + torch.sum(P_local_i_j, dim = -1, keepdim=True)		# Sum of e^{x - m(x)}
+				l_i_j = alpha * l_i_j + torch.sum(P_local_i_j, dim = -1, keepdim=True)		# Sum of e^{x - m(x)}
 				O_i_j = alpha * O_i_j + P_local_i_j @ V_j		# P * V
 
 				m_i_j = new_m_i_j
 			
 			O_i = O_i_j / l_i_j							# Divide the Sum of e^{x - m(x)} to get softmax value
-			L_i = m_i_j + np.log(l_i_j)					# recover to the state log (sum (exp (S_i_j))) 
+			L_i = m_i_j + np.log(l_i_j)					# Get log: recover to the state log (sum (exp (S_i_j))) 
 
 			start = (i-1) * B_q
 			end = min(i*B_q, N_q)
