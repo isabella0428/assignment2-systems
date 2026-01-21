@@ -1,5 +1,5 @@
 import triton
-from triton.language import tl
+_
 
 @triton.jit
 def weighted_sum_backward(
@@ -14,7 +14,7 @@ def weighted_sum_backward(
     NUM_ROWS, D,
     ROWS_TILE_SIZE: tl.constexpr, D_TILE_SIZE: tl.constexpr,
 ):
-	row_tile_idx = tl.program_id[0]
+	row_tile_idx = tl.program_id(0)
 	n_row_tiles = tl.num_programs(0)
 
 	x_block_ptr = tl.make_block_ptr(
@@ -94,7 +94,6 @@ def weighted_sum_backward(
 		partial_grad_weight_block_ptr = partial_grad_weight_block_ptr.advance((0, D_TILE_SIZE))
 		grad_x_block_ptr = grad_x_block_ptr.advance((0, D_TILE_SIZE))
 
-	
 
 
 

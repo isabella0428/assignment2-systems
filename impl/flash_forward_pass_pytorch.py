@@ -53,7 +53,7 @@ class FlashForwardPassPytorch(torch.autograd.Function):
 
 				alpha = torch.exp(m_i_j - new_m_i_j)  # Shape: (..., B_q, 1)
 				l_i_j = alpha * l_i_j + torch.sum(P_local_i_j, dim = -1, keepdim=True)		# Sum of e^{x - m(x)}
-				O_i_j = alpha * O_i_j + P_local_i_j @ V_j		# P * V
+				O_i_j = alpha * O_i_j + P_local_i_j @ V_j		# e^{x - m(x)}
 
 				m_i_j = new_m_i_j
 			
